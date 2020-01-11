@@ -158,11 +158,6 @@ resource "aws_security_group" "demo-vpc-security-group" {
     }
 }
 
-  tags = {
-    Name = "demo-vpc-security-group"
-  }
-}
-
 
 #NAT
 resource "aws_eip" "demo-eip" {
