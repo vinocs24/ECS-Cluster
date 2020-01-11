@@ -68,7 +68,7 @@ resource "aws_subnet" "demo-vpc-subnet3" {
 }
 
 
-# Route Tables
+# Route Tables public
 resource "aws_route_table" "demo-vpc-route-table" {
   vpc_id = aws_vpc.demo-vpc.id
 
@@ -165,3 +165,30 @@ resource "aws_security_group" "demo-vpc-security-group" {
 
 
 #NAT
+resource "aws_eip" "demo-eip" {
+vpc      = true
+}
+resource "aws_nat_gateway" "demo-nat-gw" {
+allocation_id = aws_eip.demo-eip.id
+subnet_id = aws_subnet.demo-vpc-subnet1.id
+depends_on = ["aws_internet_gateway.demo-vpc-internet-gateway"]
+}
+
+# Terraform Training VPC for NAT
+resource "aws_route_table" "demo-private" {
+    vpc_id = aws_vpc.demo-vpc.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = aws_nat_gateway.demo-nat-gw.id
+    }
+
+    tags = {
+        Name = "demo-private-1"
+    }
+}
+
+#Route Tables public
+resource "aws_route_table_association" "demo-private-1-a" {
+    subnet_id = aws_subnet.demo-vpc-subnet3.id
+    route_table_id = aws_route_table.demo-private.id
+}
