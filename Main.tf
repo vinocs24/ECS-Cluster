@@ -59,7 +59,7 @@ resource "aws_subnet" "demo-vpc-subnet2" {
 #Private
 resource "aws_subnet" "demo-vpc-subnet3" {
     vpc_id     = aws_vpc.demo-vpc.id
-    cidr_block = ar.private_subnet_cidr_block
+    cidr_block = var.private_subnet_cidr_block
     availability_zone = "us-west-2c"
 
     tags = {
