@@ -13,14 +13,19 @@ variable "vpc_cidr_block" {
   default     = "10.10.0.0/16"
 }
 
-variable "public_subnet_cidr_block" {
+variable "public1_subnet_cidr_block" {
   description = "Public Subnet"
   default     = "10.10.1.0/24"
 }
 
+variable "public2_subnet_cidr_block" {
+  description = "Public Subnet"
+  default     = "10.10.2.0/24"
+}
+
 variable "private_subnet_cidr_block" {
   description = "Private Subnet"
-  default     = "10.10.2.0/24"
+  default     = "10.10.3.0/24"
 }
 
 variable "availability_zones" {
