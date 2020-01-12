@@ -1,6 +1,6 @@
 resource "aws_elb" "test-http" {
-    name = "test-http-elb"
-    security_groups = ["aws_security_group.demo-vpc-security-group.id]
+    name = test-http-elb
+    security_groups = [aws_security_group.demo-vpc-security-group.id]
     subnets = [aws_subnet.demo-vpc-subnet3.id]
 
     listener {
