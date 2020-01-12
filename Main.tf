@@ -171,7 +171,7 @@ vpc      = true
 resource "aws_nat_gateway" "demo-nat-gw" {
 allocation_id = aws_eip.demo-eip.id
 subnet_id = aws_subnet.demo-vpc-subnet1.id
-depends_on = ["aws_internet_gateway.demo-vpc-internet-gateway"]
+depends_on = [aws_internet_gateway.demo-vpc-internet-gateway]
 }
 
 # Terraform Training VPC for NAT
@@ -201,7 +201,7 @@ resource "aws_ecs_cluster" "main" {
 
 resource "aws_autoscaling_group" "ecs-cluster" {
     availability_zones = [var.availability_zone]
-    name = ECS var.ecs_cluster_name
+    name = ECS "var.ecs_cluster_name"
     min_size = var.autoscale_min
     max_size = var.autoscale_max
     desired_capacity = var.autoscale_desired
