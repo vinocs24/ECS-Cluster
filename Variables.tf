@@ -56,7 +56,7 @@ variable "autoscale_desired" {
 variable "amis" {
     description = "Which AMI to spawn. Defaults to the AWS ECS optimized images."
     default = {
-        us-east-1 = "ami-ddc7b6b7"
+        us-west-2 = "ami-ddc7b6b7"
     }
 }
 
