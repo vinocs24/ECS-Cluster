@@ -133,6 +133,14 @@ resource "aws_security_group" "demo-vpc-security-group" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+  
+  // PORT 8080
+    ingress {
+        from_port = 8080
+        to_port = 8080
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 
     // HTTPS
     ingress {
