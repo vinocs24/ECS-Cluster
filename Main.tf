@@ -39,7 +39,7 @@ resource "aws_subnet" "demo-vpc-subnet1" {
     availability_zone = "us-west-2a"
 
     tags = {
-        Name = "demo-vpc-subnet"
+        Name = "demo-vpc-subnet1"
     }
 }
 
@@ -51,7 +51,7 @@ resource "aws_subnet" "demo-vpc-subnet2" {
     availability_zone = "us-west-2b"
 
     tags = {
-        Name = "demo-vpc-subnet"
+        Name = "demo-vpc-subnet2"
     }
 }
 
@@ -63,7 +63,7 @@ resource "aws_subnet" "demo-vpc-subnet3" {
     availability_zone = "us-west-2c"
 
     tags = {
-        Name = "demo-vpc-subnet"
+        Name = "demo-vpc-subnet3"
     }
 }
 
@@ -156,6 +156,11 @@ resource "aws_security_group" "demo-vpc-security-group" {
         protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+ 
+  tags = {
+        Name = "demo-SG"
+    }
+  
 }
 
 
@@ -186,4 +191,62 @@ resource "aws_route_table" "demo-private" {
 resource "aws_route_table_association" "demo-private-1-a" {
     subnet_id = aws_subnet.demo-vpc-subnet3.id
     route_table_id = aws_route_table.demo-private.id
+}
+
+
+#ECS
+resource "aws_ecs_cluster" "main" {
+    name = var.ecs_cluster_name
+}
+
+resource "aws_autoscaling_group" "ecs-cluster" {
+    availability_zones = [var.availability_zone]
+    name = ECS var.ecs_cluster_name
+    min_size = var.autoscale_min
+    max_size = var.autoscale_max
+    desired_capacity = var.autoscale_desired
+    health_check_type = "EC2"
+    launch_configuration = aws_launch_configuration.ecs.name
+    vpc_zone_identifier = [aws_subnet.demo-vpc-subnet3.id]
+}
+
+resource "aws_launch_configuration" "ecs" {
+    name = ECS var.ecs_cluster_name
+    image_id = lookup(var.amis, var.region)
+    instance_type = var.instance_type
+    security_groups = [aws_security_group.demo-vpc-security-group.id]
+    iam_instance_profile = aws_iam_instance_profile.ecs.name
+    # TODO: is there a good way to make the key configurable sanely?
+    key_name = var.key_name
+    associate_public_ip_address = true
+    user_data = "#!/bin/bash\necho ECS_CLUSTER='${var.ecs_cluster_name}' > /etc/ecs/ecs.config"
+}
+
+
+resource "aws_iam_role" "ecs_host_role" {
+    name = "ecs_host_role"
+    assume_role_policy = file("ecs-role.json")
+}
+
+resource "aws_iam_role_policy" "ecs_instance_role_policy" {
+    name = "ecs_instance_role_policy"
+    policy = file("ecs-instance-role-policy.json")
+    role = aws_iam_role.ecs_host_role.id
+}
+
+resource "aws_iam_role" "ecs_service_role" {
+    name = "ecs_service_role"
+    assume_role_policy = file("ecs-role.json")
+}
+
+resource "aws_iam_role_policy" "ecs_service_role_policy" {
+    name = "ecs_service_role_policy"
+    policy = file("ecs-service-role-policy.json")
+    role = aws_iam_role.ecs_service_role.id
+}
+
+resource "aws_iam_instance_profile" "ecs" {
+    name = "ecs-instance-profile"
+    path = "/"
+    roles = [aws_iam_role.ecs_host_role.name]
 }
