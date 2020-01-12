@@ -211,7 +211,7 @@ resource "aws_autoscaling_group" "ecs-cluster" {
 }
 
 resource "aws_launch_configuration" "ecs" {
-    name = ECS var.ecs_cluster_name
+    name = var.ecs_cluster_name
     image_id = lookup(var.amis, var.region)
     instance_type = var.instance_type
     security_groups = [aws_security_group.demo-vpc-security-group.id]
