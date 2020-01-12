@@ -24,7 +24,7 @@ resource "aws_elb" "test-http" {
 
 resource "aws_ecs_task_definition" "test-http" {
     family = "test-http"
-    container_definitions = file("Task-definition.json.json")
+    container_definitions = file("Task-definition.json")
 }
 
 resource "aws_ecs_service" "test-http" {
