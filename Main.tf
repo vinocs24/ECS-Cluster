@@ -215,7 +215,7 @@ resource "aws_autoscaling_group" "ecs-cluster" {
     desired_capacity = var.autoscale_desired
     health_check_type = "EC2"
     launch_configuration = aws_launch_configuration.ecs.name
-    vpc_zone_identifier = [aws_subnet.demo-vpc-subnet3.id]
+    vpc_zone_identifier = [aws_subnet.demo-vpc-subnet1.id]
 }
 
 resource "aws_launch_configuration" "ecs" {
